@@ -15,7 +15,10 @@ class TravelLocationMapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        VirtualTouristClient.instance.photosSearch(55.754884, lon: 37.620763) { success, result, errorString in
+            print(result)
+        }
     }
 
     override func didReceiveMemoryWarning() {
