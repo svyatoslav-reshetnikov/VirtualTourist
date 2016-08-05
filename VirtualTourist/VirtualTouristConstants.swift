@@ -25,8 +25,6 @@ extension VirtualTouristClient {
     
     // MARK: Methods
     struct Methods {
-        static let GetAccessToken = "flickr.auth.oauth.getAccessToken"
-        static let PhotosForLocation = "flickr.photos.geo.photosForLocation"
         static let PhotosSearch = "flickr.photos.search"
     }
     
@@ -42,36 +40,10 @@ extension VirtualTouristClient {
         // PhotosForLocation
         static let Lat = "lat"
         static let Lon = "lon"
-        static let Accuracy = "accuracy"
-        static let Extras = "extras"
-        static let PerPage = "per_page"
-        static let Page = "page"
     }
     
     struct RequestValues {
         static let JSON = "json"
-    }
-    
-    // MARK: Parameter Keys
-    struct JSONHeaderKeys {
-        
-        static let Accept = "Accept"
-        static let ContentType = "Content-Type"
-        
-        static let ParseAppIDHeader = "X-Parse-Application-Id"
-        static let ParseAPIKeyHeader = "X-Parse-REST-API-Key"
-    }
-    
-    // MARK: JSON Body Keys
-    struct JSONBodyKeys {
-        
-        // MARK: Udacity keys
-        
-        // Session
-        static let Udacity = "udacity"
-        static let Username = "username"
-        static let Password = "password"
-        static let Parse = "parse"
     }
     
     // MARK: JSON Response Keys
