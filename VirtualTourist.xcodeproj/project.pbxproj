@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		933F2821BEA329D511B5C93C /* Pods_VirtualTourist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CA9890E5E36834CD7E6476 /* Pods_VirtualTourist.framework */; };
 		E194F39F1D531A200019B44D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E194F39E1D531A200019B44D /* AppDelegate.swift */; };
 		E194F3A11D531A200019B44D /* TravelLocationMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E194F3A01D531A200019B44D /* TravelLocationMapViewController.swift */; };
 		E194F3A41D531A200019B44D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E194F3A21D531A200019B44D /* Main.storyboard */; };
@@ -20,6 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		73CA9890E5E36834CD7E6476 /* Pods_VirtualTourist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VirtualTourist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C94E5603C84449AE80C891A5 /* Pods-VirtualTourist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.release.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.release.xcconfig"; sourceTree = "<group>"; };
+		D0FF27F9C4CC1E186DFB6DC7 /* Pods-VirtualTourist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.debug.xcconfig"; sourceTree = "<group>"; };
 		E194F39B1D531A200019B44D /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E194F39E1D531A200019B44D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E194F3A01D531A200019B44D /* TravelLocationMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationMapViewController.swift; sourceTree = "<group>"; };
@@ -40,17 +44,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				933F2821BEA329D511B5C93C /* Pods_VirtualTourist.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27ED49D4D378D1E3A16268E1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				73CA9890E5E36834CD7E6476 /* Pods_VirtualTourist.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		55F5435283AC5620B6DEA674 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D0FF27F9C4CC1E186DFB6DC7 /* Pods-VirtualTourist.debug.xcconfig */,
+				C94E5603C84449AE80C891A5 /* Pods-VirtualTourist.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		E194F3921D531A200019B44D = {
 			isa = PBXGroup;
 			children = (
 				E194F39D1D531A200019B44D /* VirtualTourist */,
 				E194F39C1D531A200019B44D /* Products */,
+				55F5435283AC5620B6DEA674 /* Pods */,
+				27ED49D4D378D1E3A16268E1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,9 +152,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E194F3AD1D531A200019B44D /* Build configuration list for PBXNativeTarget "VirtualTourist" */;
 			buildPhases = (
+				1557A963DB3D8090C7FFCFD2 /* [CP] Check Pods Manifest.lock */,
 				E194F3971D531A200019B44D /* Sources */,
 				E194F3981D531A200019B44D /* Frameworks */,
 				E194F3991D531A200019B44D /* Resources */,
+				426509FDF4D374E30ACFC84D /* [CP] Embed Pods Frameworks */,
+				B3AD57F7646EE8F3F4C3B950 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -186,6 +213,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1557A963DB3D8090C7FFCFD2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		426509FDF4D374E30ACFC84D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B3AD57F7646EE8F3F4C3B950 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E194F3971D531A200019B44D /* Sources */ = {
@@ -311,6 +386,7 @@
 		};
 		E194F3AE1D531A200019B44D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0FF27F9C4CC1E186DFB6DC7 /* Pods-VirtualTourist.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -326,6 +402,7 @@
 		};
 		E194F3AF1D531A200019B44D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C94E5603C84449AE80C891A5 /* Pods-VirtualTourist.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

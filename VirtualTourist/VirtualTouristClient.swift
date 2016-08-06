@@ -103,7 +103,6 @@ class VirtualTouristClient : NSObject {
     }
     
     // given raw JSON, return a usable Foundation object
-    
     private func convertDataFromFlickrWithCompletionHandler(data: NSData, completionHandlerForConvertData: (result: AnyObject!, error: NSError?) -> Void) {
         
         var parsedResult: AnyObject!
@@ -147,38 +146,4 @@ class VirtualTouristClient : NSObject {
         
         return components.URL!
     }
-    
-    /*func udacityUrlFromParameters(parameters: [String:AnyObject], withPathExtension: String? = nil) -> NSURL {
-        
-        let components = createURLComponentWithParameters(parameters)
-        
-        components.scheme = VirtualTouristClient.Constants.HTTPSScheme
-        components.host = VirtualTouristClient.Constants.UdacityHost
-        components.path = VirtualTouristClient.Constants.UdacityPath + (withPathExtension ?? "")
-        components.queryItems = [NSURLQueryItem]()
-        
-        for (key, value) in parameters {
-            let queryItem = NSURLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem)
-        }
-        
-        return components.URL!
-    }
-    
-    func parseUrlFromParameters(parameters: [String:AnyObject], withPathExtension: String? = nil) -> NSURL {
-        
-        let components = createURLComponentWithParameters(parameters)
-        
-        components.scheme = VirtualTouristClient.Constants.HTTPSScheme
-        components.host = VirtualTouristClient.Constants.ParseHost
-        components.path = VirtualTouristClient.Constants.ParsePath + (withPathExtension ?? "")
-        components.queryItems = [NSURLQueryItem]()
-        
-        for (key, value) in parameters {
-            let queryItem = NSURLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem)
-        }
-        
-        return components.URL!
-    }*/
 }
