@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import ObjectMapper
 
 extension VirtualTouristClient {
     
-    func photosSearch(lat: Double, lon: Double, completionHandler: (success: Bool, result: AnyObject?, errorString: String?) -> Void) {
+    func photosSearch(lat: Double, lon: Double, completionHandler: (success: Bool, result: PhotosSearchResponse?, errorString: String?) -> Void) {
         
         var parameters = [String:AnyObject]()
         parameters[VirtualTouristClient.RequestKeys.Method] = VirtualTouristClient.Methods.PhotosSearch
@@ -26,11 +27,12 @@ extension VirtualTouristClient {
         
         let request = NSMutableURLRequest(URL: url)
         
-        taskForGETMethod(request) { results, error in
+        taskForGETMethod(request) { result, error in
             if let error = error {
                 completionHandler(success: false, result: nil, errorString: error.localizedDescription)
             } else {
-                completionHandler(success: true, result: results, errorString: "")
+                let photoResponse = Mapper<PhotosSearchResponse>().map(result)!
+                completionHandler(success: true, result: photoResponse, errorString: "")
             }
         }
     }

@@ -33,7 +33,7 @@ class Utils {
         for object in sortedArray {
             str += object.0 + String(object.1)
         }
-        print(str)
+        
         return md5(str)
     }
 }

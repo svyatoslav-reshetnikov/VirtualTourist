@@ -49,38 +49,26 @@ extension VirtualTouristClient {
     // MARK: JSON Response Keys
     struct JSONResponseKeys {
         
-        // MARK: Udacity keys
+        static let Stat = "stat"
         
-        // Session
-        static let Session = "session"
-        static let SessionID = "id"
+        // PhotosSearch
+        static let Photos = "photos"
         
-        // Account
-        static let Account = "account"
-        static let Key = "key"
+        static let Page = "page"
+        static let Pages = "pages"
+        static let Perpage = "perpage"
+        static let Photo = "photo"
+        static let Total = "total"
         
-        // User
-        static let User = "user"
-        static let UdacityFirstName = "first_name"
-        static let UdacityLastName = "last_name"
-        
-        // MARK: Parse keys
-        
-        // Students information
-        static let Results = "results"
-        
-        static let CreatedAt = "createdAt"
-        static let FirstName = "firstName"
-        static let LastName = "lastName"
-        static let Latitude = "latitude"
-        static let Longitude = "longitude"
-        static let MapString = "mapString"
-        static let MediaURL = "mediaURL"
-        static let ObjectId = "objectId"
-        static let UniqueKey = "uniqueKey"
-        static let UpdatedAt = "updatedAt"
-        
-        // Post student
-        static let ObjectID = "objectId"
+        // Photo from photos array
+        static let Farm = "farm"
+        static let ID = "id"
+        static let IsFamily = "isfamily"
+        static let IsFriend = "isfriend"
+        static let IsPublic = "ispublic"
+        static let Owner = "owner"
+        static let Secret = "secret"
+        static let Server = "server"
+        static let Title = "title"
     }
 }

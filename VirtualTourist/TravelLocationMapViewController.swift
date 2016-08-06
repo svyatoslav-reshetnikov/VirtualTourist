@@ -17,7 +17,14 @@ class TravelLocationMapViewController: UIViewController {
         super.viewDidLoad()
         
         VirtualTouristClient.instance.photosSearch(55.754884, lon: 37.620763) { success, result, errorString in
-            print(result)
+            
+            guard let photos = result?.photos?.photos else {
+                return
+            }
+            
+            for photo in photos {
+                print(photo.isPublic)
+            }
         }
     }
 
