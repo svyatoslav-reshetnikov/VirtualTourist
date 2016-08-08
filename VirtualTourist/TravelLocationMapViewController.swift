@@ -25,10 +25,10 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func addPinByLongPress(gestureRecognizer:UIGestureRecognizer) {
+        
         if gestureRecognizer.state == .Began {
             let touchPoint = gestureRecognizer.locationInView(mapView)
             let newCoordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
@@ -54,6 +54,13 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         pin!.animatesDrop = true
         return pin
     }
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        
+        let photoAlbum = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
+        photoAlbum.coordinates = view.annotation?.coordinate
+        
+        navigationController?.pushViewController(photoAlbum, animated: true)
+    }
 
 }
-
