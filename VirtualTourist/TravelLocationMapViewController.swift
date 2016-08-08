@@ -52,6 +52,7 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         }
         
         pin!.animatesDrop = true
+        
         return pin
     }
     
@@ -61,6 +62,8 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         photoAlbum.coordinates = view.annotation?.coordinate
         
         navigationController?.pushViewController(photoAlbum, animated: true)
+        
+        mapView.deselectAnnotation(view.annotation, animated: false)
     }
 
 }
