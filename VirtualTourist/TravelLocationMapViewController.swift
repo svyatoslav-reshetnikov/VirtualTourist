@@ -16,11 +16,11 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mapView.delegate = self
-        
         let longPress = UILongPressGestureRecognizer(target: self, action:#selector(TravelLocationMapViewController.addPinByLongPress(_:)))
         longPress.minimumPressDuration = 0.5
+        
         mapView.addGestureRecognizer(longPress)
+        mapView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,6 +38,7 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
 
+    // MARK: MKMapViewDelegate methods
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         if (annotation is MKUserLocation) {
@@ -65,5 +66,4 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         
         mapView.deselectAnnotation(view.annotation, animated: false)
     }
-
 }
