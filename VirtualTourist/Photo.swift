@@ -10,15 +10,15 @@ import ObjectMapper
 
 class Photo: Mappable {
     
-    var farm: Int?
-    var id: String?
-    var isFamily: Bool?
-    var isFriend: Bool?
-    var isPublic: Bool?
-    var owner: String?
-    var secret: String?
-    var server: String?
-    var title: String?
+    var farm: Int!
+    var id: String!
+    var isFamily: Bool!
+    var isFriend: Bool!
+    var isPublic: Bool!
+    var owner: String!
+    var secret: String!
+    var server: String!
+    var title: String!
     
     required init?(_ map: Map){}
     

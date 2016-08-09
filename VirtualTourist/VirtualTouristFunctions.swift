@@ -11,12 +11,13 @@ import ObjectMapper
 
 extension VirtualTouristClient {
     
-    func photosSearch(lat: Double, lon: Double, completionHandler: (success: Bool, result: PhotosSearchResponse?, errorString: String?) -> Void) {
+    func photosSearch(lat: Double, lon: Double, perPage: String, completionHandler: (success: Bool, result: PhotosSearchResponse?, errorString: String?) -> Void) {
         
         var parameters = [String:AnyObject]()
         parameters[VirtualTouristClient.RequestKeys.Method] = VirtualTouristClient.Methods.PhotosSearch
         parameters[VirtualTouristClient.RequestKeys.Lat] = lat
         parameters[VirtualTouristClient.RequestKeys.Lon] = lon
+        parameters[VirtualTouristClient.RequestKeys.PerPage] = perPage
         
         parameters[VirtualTouristClient.RequestKeys.Format] = VirtualTouristClient.RequestValues.JSON
         parameters[VirtualTouristClient.RequestKeys.NoJsonCallback] = 1

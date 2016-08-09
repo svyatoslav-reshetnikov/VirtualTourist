@@ -8,12 +8,17 @@
 
 import UIKit
 import MapKit
+import ImageLoader
+import QuartzCore
+import Foundation
 
-class PhotoAlbumViewController: UIViewController {
+class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource  {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     var coordinates: CLLocationCoordinate2D!
+    var photos = [Photo]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,23 +29,37 @@ class PhotoAlbumViewController: UIViewController {
         annotation.coordinate = coordinates
         mapView.addAnnotation(annotation)
         
-        VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude) { success, result, errorString in
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude, perPage: "21") { success, result, errorString in
             
             guard let photos = result?.photos?.photos else {
                 return
             }
             
-            for photo in photos {
-                print(photo.isPublic)
+            self.photos = photos
+            
+            dispatch_async(dispatch_get_main_queue()) { [unowned self] in
+                self.collectionView.reloadData()
             }
         }
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return photos.count
+    }
     
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
+        
+        cell.photo.load(Utils.instance.buildURLForPhoto(photos[indexPath.row], size: "s"))
+        
+        return cell
+    }
 }
