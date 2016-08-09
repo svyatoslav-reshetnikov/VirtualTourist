@@ -8,7 +8,7 @@
 
 import ObjectMapper
 
-class Photo: Mappable {
+class PhotoFlickr: Mappable {
     
     var farm: Int!
     var id: String!

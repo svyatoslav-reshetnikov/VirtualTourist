@@ -18,7 +18,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     @IBOutlet weak var collectionView: UICollectionView!
     
     var coordinates: CLLocationCoordinate2D!
-    var photos = [Photo]()
+    var photos = [PhotoFlickr]()
     var page = 0
     
     override func viewDidLoad() {
@@ -41,12 +41,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     func photoSearch() {
         
-        page += 1
-        
         // Clean collectionView
-        photos = [Photo]()
+        photos.removeAll()
         self.collectionView.reloadData()
         
+        // Update page number
+        page += 1
+        
+        // Download new collection of images
         VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude, page: page, perPage: 21) { success, result, errorString in
             
             guard let photos = result?.photos?.photos else {

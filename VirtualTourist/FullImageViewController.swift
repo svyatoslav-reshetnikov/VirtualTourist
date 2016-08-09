@@ -12,7 +12,7 @@ import ImageLoader
 class FullPhotoViewController: UIViewController {
 
     @IBOutlet weak var fullPhoto: UIImageView!
-    var photo: Photo!
+    var photo: PhotoFlickr!
     
     override func viewDidLoad() {
         super.viewDidLoad()

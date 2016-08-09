@@ -14,7 +14,7 @@ class Photos: Mappable {
     var pages: Int?
     var perpage: Int?
     var total: String?
-    var photos = [Photo]()
+    var photos = [PhotoFlickr]()
     
     required init?(_ map: Map){}
     

@@ -53,7 +53,7 @@ class Utils {
      k	large 2048, 2048 on longest side†
      o	original image, either a jpg, gif or png, depending on source format
      */
-    func buildURLForPhoto(photo: Photo, size: String) -> String {
+    func buildURLForPhoto(photo: PhotoFlickr, size: String) -> String {
         var url = "https://farm" + String(photo.farm) + ".staticflickr.com/"
         url += String(photo.server) + "/"
         url += photo.id + "_" + photo.secret + "_" + size + ".jpg"
