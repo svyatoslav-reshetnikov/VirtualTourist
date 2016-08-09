@@ -19,6 +19,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     var coordinates: CLLocationCoordinate2D!
     var photos = [Photo]()
+    var page = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,21 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude, perPage: "21") { success, result, errorString in
+        let updateButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(PhotoAlbumViewController.photoSearch))
+        navigationItem.rightBarButtonItem = updateButton
+        
+        photoSearch()
+    }
+    
+    func photoSearch() {
+        
+        page += 1
+        
+        // Clean collectionView
+        photos = [Photo]()
+        self.collectionView.reloadData()
+        
+        VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude, page: page, perPage: 21) { success, result, errorString in
             
             guard let photos = result?.photos?.photos else {
                 return
@@ -50,6 +65,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         super.didReceiveMemoryWarning()
     }
     
+    // MARK: UICollectionViewDelegate & UICollectionViewDataSource
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
@@ -61,5 +77,31 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         cell.photo.load(Utils.instance.buildURLForPhoto(photos[indexPath.row], size: "s"))
         
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+        let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .Default, handler: { alert -> Void in
+            
+        })
+        
+        let viewAction = UIAlertAction(title: "View", style: .Default, handler: { alert -> Void in
+            let fullPhoto = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("FullPhotoViewController") as! FullPhotoViewController
+            fullPhoto.photo = self.photos[indexPath.row]
+            
+            self.navigationController?.pushViewController(fullPhoto, animated: true)
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { alert -> Void in
+            
+        })
+        
+        optionMenu.addAction(deleteAction)
+        optionMenu.addAction(viewAction)
+        optionMenu.addAction(cancelAction)
+        
+        self.presentViewController(optionMenu, animated: true, completion: nil)
     }
 }

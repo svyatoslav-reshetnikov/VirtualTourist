@@ -109,6 +109,38 @@
             </objects>
             <point key="canvasLocation" x="2105" y="321"/>
         </scene>
+        <!--Full Photo View Controller-->
+        <scene sceneID="b1o-dQ-WzH">
+            <objects>
+                <viewController storyboardIdentifier="FullPhotoViewController" id="42x-Lj-zGm" customClass="FullPhotoViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="b9c-Bu-BkH"/>
+                        <viewControllerLayoutGuide type="bottom" id="ue9-ze-lrG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xPo-qI-hjP">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FV0-YG-NWM">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="FV0-YG-NWM" firstAttribute="leading" secondItem="xPo-qI-hjP" secondAttribute="leading" id="6jc-MV-KN0"/>
+                            <constraint firstItem="FV0-YG-NWM" firstAttribute="top" secondItem="xPo-qI-hjP" secondAttribute="top" id="Rxj-N4-wGk"/>
+                            <constraint firstAttribute="trailing" secondItem="FV0-YG-NWM" secondAttribute="trailing" id="afa-hB-QMF"/>
+                            <constraint firstItem="ue9-ze-lrG" firstAttribute="top" secondItem="FV0-YG-NWM" secondAttribute="bottom" id="p5j-Zt-SJs"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="fullPhoto" destination="FV0-YG-NWM" id="2kf-Kf-qov"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fAw-8V-nVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2781" y="321"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="bQk-VY-2ww">
             <objects>
