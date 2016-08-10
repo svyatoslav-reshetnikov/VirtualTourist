@@ -11,6 +11,7 @@ import MapKit
 import ImageLoader
 import QuartzCore
 import Foundation
+import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource  {
     
@@ -105,5 +106,67 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         optionMenu.addAction(cancelAction)
         
         self.presentViewController(optionMenu, animated: true, completion: nil)
+    }
+    
+    // MARK: CoreData
+    func savePhoto(image: NSData) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let entity =  NSEntityDescription.entityForName("Photo", inManagedObjectContext:managedContext)
+        let photo = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        photo.setValue(image, forKey: "image")
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+    }
+    
+    func deletePin(lat: Double, lon: Double) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        do {
+            let results = try managedContext.executeFetchRequest(fetchRequest)
+            let pins = results as! [NSManagedObject]
+            
+            for pin in pins {
+                if lat == pin.valueForKey("lat") as! Double && lon == pin.valueForKey("lon") as! Double {
+                    managedContext.deleteObject(pin as NSManagedObject)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+    }
+    
+    func getPins() {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        do {
+            let results = try managedContext.executeFetchRequest(fetchRequest)
+            let pins = results as! [NSManagedObject]
+            
+            for pin in pins {
+                
+                let lat = pin.valueForKey("lat") as! Double
+                let lon = pin.valueForKey("lon") as! Double
+                
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                
+                mapView.addAnnotation(annotation)
+            }
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
     }
 }

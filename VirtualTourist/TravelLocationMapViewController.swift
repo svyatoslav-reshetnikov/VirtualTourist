@@ -135,15 +135,14 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let managedContext = appDelegate.managedObjectContext
         let fetchRequest = NSFetchRequest(entityName: "Pin")
+        fetchRequest.predicate = NSPredicate(format: "%K == %@ AND %K == %@", argumentArray:["lat", lat, "lon", lon])
         
         do {
             let results = try managedContext.executeFetchRequest(fetchRequest)
             let pins = results as! [NSManagedObject]
             
             for pin in pins {
-                if lat == pin.valueForKey("lat") as! Double && lon == pin.valueForKey("lon") as! Double {
-                    managedContext.deleteObject(pin as NSManagedObject)
-                }
+                managedContext.deleteObject(pin as NSManagedObject)
             }
         } catch let error as NSError {
             print("Could not fetch \(error), \(error.userInfo)")
