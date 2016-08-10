@@ -12,6 +12,8 @@ import MapKit
 class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var deleteView: UIView!
+    @IBOutlet weak var deleteText: UILabel!
     
     var editButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
@@ -41,9 +43,11 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         switch sender {
         case editButton:
             navigationItem.rightBarButtonItem = doneButton
+            setAlphaForDeleteInfo(1)
             break
         case doneButton:
             navigationItem.rightBarButtonItem = editButton
+            setAlphaForDeleteInfo(0)
             break
         default:
             navigationItem.rightBarButtonItem = editButton
@@ -96,5 +100,10 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         
             mapView.deselectAnnotation(view.annotation, animated: false)
         }
+    }
+    
+    func setAlphaForDeleteInfo(alpha: CGFloat) {
+        deleteView.alpha = alpha
+        deleteText.alpha = alpha
     }
 }

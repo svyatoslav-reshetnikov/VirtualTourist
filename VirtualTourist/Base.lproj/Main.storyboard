@@ -20,17 +20,39 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="u5q-fV-c82">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ib9-fP-hnC">
+                                <rect key="frame" x="0.0" y="551" width="600" height="49"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap pins to delete" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KGZ-WF-UWg">
+                                        <rect key="frame" x="232" y="14" width="137" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.98431372549999996" green="0.16862745100000001" blue="0.090196078430000007" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="KGZ-WF-UWg" firstAttribute="centerX" secondItem="ib9-fP-hnC" secondAttribute="centerX" id="QeR-T5-itT"/>
+                                    <constraint firstAttribute="height" constant="49" id="pju-wf-joe"/>
+                                    <constraint firstItem="KGZ-WF-UWg" firstAttribute="top" secondItem="ib9-fP-hnC" secondAttribute="top" constant="14" id="x40-la-cv5"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="u5q-fV-c82" secondAttribute="bottom" id="79o-47-GMz"/>
                             <constraint firstItem="u5q-fV-c82" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="9Dl-CP-h3y"/>
+                            <constraint firstAttribute="trailing" secondItem="ib9-fP-hnC" secondAttribute="trailing" id="Prt-KV-oX6"/>
                             <constraint firstItem="u5q-fV-c82" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="UKp-K1-qsz"/>
                             <constraint firstAttribute="trailing" secondItem="u5q-fV-c82" secondAttribute="trailing" id="WtG-7F-Dof"/>
+                            <constraint firstItem="ib9-fP-hnC" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="eLt-16-Tcv"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ib9-fP-hnC" secondAttribute="bottom" id="nr8-th-Xx7"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="szg-Ii-oEj"/>
                     <connections>
+                        <outlet property="deleteText" destination="KGZ-WF-UWg" id="Bi6-G9-uMj"/>
+                        <outlet property="deleteView" destination="ib9-fP-hnC" id="gee-pR-G1P"/>
                         <outlet property="mapView" destination="u5q-fV-c82" id="SXe-vD-VxC"/>
                     </connections>
                 </viewController>
