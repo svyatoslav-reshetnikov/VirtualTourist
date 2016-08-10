@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
 
@@ -32,6 +33,8 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         doneButton = UIBarButtonItem(title: "Done", style: .Done, target: self, action:#selector(TravelLocationMapViewController.changeEditMode(_:)))
         
         navigationItem.rightBarButtonItem = editButton
+        
+        getPins()
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,19 +63,20 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         
         if gestureRecognizer.state == .Began && !editMode {
             let touchPoint = gestureRecognizer.locationInView(mapView)
-            let newCoordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
+            let coordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
             
             let annotation = MKPointAnnotation()
-            annotation.coordinate = newCoordinates
+            annotation.coordinate = coordinates
             
             mapView.addAnnotation(annotation)
+            savePin(coordinates.latitude, lon: coordinates.longitude)
         }
     }
     
     // MARK: MKMapViewDelegate methods
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
-        if (annotation is MKUserLocation) {
+        if annotation is MKUserLocation {
             return nil
         }
         
@@ -91,6 +95,7 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         
         if editMode {
+            deletePin((view.annotation?.coordinate.latitude)!, lon: (view.annotation?.coordinate.longitude)!)
             mapView.removeAnnotation(view.annotation!)
         } else {
             let photoAlbum = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
@@ -105,5 +110,68 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
     func setAlphaForDeleteInfo(alpha: CGFloat) {
         deleteView.alpha = alpha
         deleteText.alpha = alpha
+    }
+    
+    // MARK: CoreData
+    func savePin(lat: Double, lon: Double) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let entity =  NSEntityDescription.entityForName("Pin", inManagedObjectContext:managedContext)
+        let pin = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        pin.setValue(lat, forKey: "lat")
+        pin.setValue(lon, forKey: "lon")
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+    }
+    
+    func deletePin(lat: Double, lon: Double) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        do {
+            let results = try managedContext.executeFetchRequest(fetchRequest)
+            let pins = results as! [NSManagedObject]
+            
+            for pin in pins {
+                if lat == pin.valueForKey("lat") as! Double && lon == pin.valueForKey("lon") as! Double {
+                    managedContext.deleteObject(pin as NSManagedObject)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+    }
+    
+    func getPins() {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        do {
+            let results = try managedContext.executeFetchRequest(fetchRequest)
+            let pins = results as! [NSManagedObject]
+            
+            for pin in pins {
+                
+                let lat = pin.valueForKey("lat") as! Double
+                let lon = pin.valueForKey("lon") as! Double
+                
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                
+                mapView.addAnnotation(annotation)
+            }
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
     }
 }
