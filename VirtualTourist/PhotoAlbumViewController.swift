@@ -85,23 +85,23 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .Default, handler: { alert -> Void in
-            
-        })
-        
-        let viewAction = UIAlertAction(title: "View", style: .Default, handler: { alert -> Void in
+        let showAction = UIAlertAction(title: "Show", style: .Default, handler: { alert -> Void in
             let fullPhoto = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("FullPhotoViewController") as! FullPhotoViewController
             fullPhoto.photo = self.photos[indexPath.row]
             
             self.navigationController?.pushViewController(fullPhoto, animated: true)
         })
         
+        let deleteAction = UIAlertAction(title: "Delete", style: .Default, handler: { alert -> Void in
+            
+        })
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { alert -> Void in
             
         })
         
+        optionMenu.addAction(showAction)
         optionMenu.addAction(deleteAction)
-        optionMenu.addAction(viewAction)
         optionMenu.addAction(cancelAction)
         
         self.presentViewController(optionMenu, animated: true, completion: nil)

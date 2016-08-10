@@ -13,6 +13,10 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
+    var editButton: UIBarButtonItem!
+    var doneButton: UIBarButtonItem!
+    var editMode = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,23 +25,46 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
         
         mapView.addGestureRecognizer(longPress)
         mapView.delegate = self
+        
+        editButton = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action:#selector(TravelLocationMapViewController.changeEditMode(_:)))
+        doneButton = UIBarButtonItem(title: "Done", style: .Done, target: self, action:#selector(TravelLocationMapViewController.changeEditMode(_:)))
+        
+        navigationItem.rightBarButtonItem = editButton
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func addPinByLongPress(gestureRecognizer:UIGestureRecognizer) {
+    @IBAction func changeEditMode(sender: UIBarButtonItem) {
         
-        if gestureRecognizer.state == .Began {
+        switch sender {
+        case editButton:
+            navigationItem.rightBarButtonItem = doneButton
+            break
+        case doneButton:
+            navigationItem.rightBarButtonItem = editButton
+            break
+        default:
+            navigationItem.rightBarButtonItem = editButton
+        }
+        
+        editMode = !editMode
+    }
+    
+    func addPinByLongPress(gestureRecognizer: UIGestureRecognizer) {
+        
+        if gestureRecognizer.state == .Began && !editMode {
             let touchPoint = gestureRecognizer.locationInView(mapView)
             let newCoordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
+            
             let annotation = MKPointAnnotation()
             annotation.coordinate = newCoordinates
+            
             mapView.addAnnotation(annotation)
         }
     }
-
+    
     // MARK: MKMapViewDelegate methods
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -59,11 +86,15 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         
-        let photoAlbum = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
-        photoAlbum.coordinates = view.annotation?.coordinate
+        if editMode {
+            mapView.removeAnnotation(view.annotation!)
+        } else {
+            let photoAlbum = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
+            photoAlbum.coordinates = view.annotation?.coordinate
         
-        navigationController?.pushViewController(photoAlbum, animated: true)
+            navigationController?.pushViewController(photoAlbum, animated: true)
         
-        mapView.deselectAnnotation(view.annotation, animated: false)
+            mapView.deselectAnnotation(view.annotation, animated: false)
+        }
     }
 }
