@@ -69,7 +69,10 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
             annotation.coordinate = coordinates
             
             mapView.addAnnotation(annotation)
-            savePin(coordinates.latitude, lon: coordinates.longitude)
+            
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let managedContext = appDelegate.managedObjectContext
+            Pin.savePin(annotation, context: managedContext)
         }
     }
     
@@ -110,24 +113,6 @@ class TravelLocationMapViewController: UIViewController, MKMapViewDelegate {
     func setAlphaForDeleteInfo(alpha: CGFloat) {
         deleteView.alpha = alpha
         deleteText.alpha = alpha
-    }
-    
-    // MARK: CoreData
-    func savePin(lat: Double, lon: Double) {
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let entity =  NSEntityDescription.entityForName("Pin", inManagedObjectContext:managedContext)
-        let pin = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
-        
-        pin.setValue(lat, forKey: "lat")
-        pin.setValue(lon, forKey: "lon")
-        
-        do {
-            try managedContext.save()
-        } catch let error as NSError  {
-            print("Could not save \(error), \(error.userInfo)")
-        }
     }
     
     func deletePin(lat: Double, lon: Double) {
