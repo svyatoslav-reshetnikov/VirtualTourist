@@ -18,17 +18,19 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var coordinates: CLLocationCoordinate2D!
-    var photos = [PhotoFlickr]()
+    var pin: Pin!
+    var coordinate: CLLocationCoordinate2D!
+    var images = [UIImage]()
     var page = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mapView.centerCoordinate = coordinates
+        coordinate = CLLocationCoordinate2D(latitude: pin.lat!.doubleValue, longitude: pin.lon!.doubleValue)
+        mapView.centerCoordinate = coordinate
         
         let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinates
+        annotation.coordinate = coordinate
         mapView.addAnnotation(annotation)
         
         collectionView.delegate = self
@@ -37,30 +39,51 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         let updateButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(PhotoAlbumViewController.photoSearch))
         navigationItem.rightBarButtonItem = updateButton
         
-        photoSearch()
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", argumentArray:["pin", pin])
+        let photos = Photo.getPhotos(fetchRequest, context: context).map { photos in return photos as! [Photo] }
+        
+        if photos?.count > 0 {
+            for photo in photos! {
+                images.append(UIImage(data: photo.image!)!)
+            }
+        } else {
+            photoSearch()
+        }
     }
     
     func photoSearch() {
-        
-        // Clean collectionView
-        photos.removeAll()
-        self.collectionView.reloadData()
+        print("photoSearch")
+        // Clean
+        images.removeAll()
+        collectionView.reloadData()
+        pin.cleatPhotos()
         
         // Update page number
         page += 1
         
         // Download new collection of images
-        VirtualTouristClient.instance.photosSearch(coordinates.latitude, lon: coordinates.longitude, page: page, perPage: 21) { success, result, errorString in
+        VirtualTouristClient.instance.photosSearch(coordinate.latitude, lon: coordinate.longitude, page: page, perPage: 21) { success, result, errorString in
             
             guard let photos = result?.photos?.photos else {
                 return
             }
             
-            self.photos = photos
-            
-            dispatch_async(dispatch_get_main_queue()) { [unowned self] in
-                self.collectionView.reloadData()
+            for photo in photos {
+                ImageLoader.load(Utils.instance.buildURLForPhoto(photo, size: "s")).completionHandler({ url, image, error, cacheType in
+                    
+                    if image != nil {
+                        dispatch_async(dispatch_get_main_queue()) { [unowned self] in
+                            self.images.append(image!)
+                            Photo.savePhoto(UIImageJPEGRepresentation(image!, 1.0)!, pin: self.pin, context: self.context)
+                            self.collectionView.reloadData()
+                            
+                            print("Saves")
+                        }
+                    }
+                })
             }
+            
         }
     }
     
@@ -70,14 +93,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     // MARK: UICollectionViewDelegate & UICollectionViewDataSource
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return images.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
         
-        cell.photo.load(Utils.instance.buildURLForPhoto(photos[indexPath.row], size: "s"))
+        cell.photo.image = images[indexPath.row]
         
         return cell
     }
@@ -87,10 +110,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
         
         let showAction = UIAlertAction(title: "Show", style: .Default, handler: { alert -> Void in
-            let fullPhoto = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("FullPhotoViewController") as! FullPhotoViewController
+            /*let fullPhoto = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("FullPhotoViewController") as! FullPhotoViewController
             fullPhoto.photo = self.photos[indexPath.row]
             
-            self.navigationController?.pushViewController(fullPhoto, animated: true)
+            self.navigationController?.pushViewController(fullPhoto, animated: true)*/
         })
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Default, handler: { alert -> Void in
@@ -108,65 +131,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         self.presentViewController(optionMenu, animated: true, completion: nil)
     }
     
-    // MARK: CoreData
-    func savePhoto(image: NSData) {
-        
+    var context: NSManagedObjectContext {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let entity =  NSEntityDescription.entityForName("Photo", inManagedObjectContext:managedContext)
-        let photo = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
-        
-        photo.setValue(image, forKey: "image")
-        
-        do {
-            try managedContext.save()
-        } catch let error as NSError  {
-            print("Could not save \(error), \(error.userInfo)")
-        }
-    }
-    
-    func deletePin(lat: Double, lon: Double) {
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
-        
-        do {
-            let results = try managedContext.executeFetchRequest(fetchRequest)
-            let pins = results as! [NSManagedObject]
-            
-            for pin in pins {
-                if lat == pin.valueForKey("lat") as! Double && lon == pin.valueForKey("lon") as! Double {
-                    managedContext.deleteObject(pin as NSManagedObject)
-                }
-            }
-        } catch let error as NSError {
-            print("Could not fetch \(error), \(error.userInfo)")
-        }
-    }
-    
-    func getPins() {
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
-        
-        do {
-            let results = try managedContext.executeFetchRequest(fetchRequest)
-            let pins = results as! [NSManagedObject]
-            
-            for pin in pins {
-                
-                let lat = pin.valueForKey("lat") as! Double
-                let lon = pin.valueForKey("lon") as! Double
-                
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                
-                mapView.addAnnotation(annotation)
-            }
-        } catch let error as NSError {
-            print("Could not fetch \(error), \(error.userInfo)")
-        }
+        return appDelegate.managedObjectContext
     }
 }

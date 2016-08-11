@@ -50,4 +50,8 @@ class Pin: NSManagedObject {
         }
     }
     
+    func cleatPhotos() {
+        self.photos?.removeAll()
+    }
+    
 }
