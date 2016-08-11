@@ -29,14 +29,14 @@ class Photo: NSManagedObject {
     }
     
     static func deletePhoto(pin: Pin, context: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", argumentArray:["pin", pin])
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["pin", pin])
         
-        let pins = getPhotos(fetchRequest, context: context).map { pins in return pins as! [Photo] }
+        let photos = getPhotos(fetchRequest, context: context).map { photos in return photos as! [Photo] }
         
-        if pins != nil {
-            for pin in pins! {
-                context.deleteObject(pin)
+        if photos != nil {
+            for photo in photos! {
+                context.deleteObject(photo)
             }
         }
     }

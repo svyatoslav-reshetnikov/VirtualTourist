@@ -17,6 +17,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     var pin: Pin!
     var coordinate: CLLocationCoordinate2D!
@@ -53,7 +54,9 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     func photoSearch() {
-        print("photoSearch")
+        
+        indicator.startAnimating()
+        
         // Clean
         images.removeAll()
         collectionView.reloadData()
@@ -64,6 +67,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         
         // Download new collection of images
         VirtualTouristClient.instance.photosSearch(coordinate.latitude, lon: coordinate.longitude, page: page, perPage: 21) { success, result, errorString in
+            
+            self.indicator.stopAnimating()
             
             guard let photos = result?.photos?.photos else {
                 return
@@ -77,8 +82,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                             self.images.append(image!)
                             Photo.savePhoto(UIImageJPEGRepresentation(image!, 1.0)!, pin: self.pin, context: self.context)
                             self.collectionView.reloadData()
-                            
-                            print("Saves")
                         }
                     }
                 })
@@ -107,28 +110,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
+        images.removeAtIndex(indexPath.row)
+        Photo.deletePhoto(pin, context: context)
         
-        let showAction = UIAlertAction(title: "Show", style: .Default, handler: { alert -> Void in
-            /*let fullPhoto = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("FullPhotoViewController") as! FullPhotoViewController
-            fullPhoto.photo = self.photos[indexPath.row]
-            
-            self.navigationController?.pushViewController(fullPhoto, animated: true)*/
-        })
-        
-        let deleteAction = UIAlertAction(title: "Delete", style: .Default, handler: { alert -> Void in
-            
-        })
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { alert -> Void in
-            
-        })
-        
-        optionMenu.addAction(showAction)
-        optionMenu.addAction(deleteAction)
-        optionMenu.addAction(cancelAction)
-        
-        self.presentViewController(optionMenu, animated: true, completion: nil)
+        collectionView.reloadData()
     }
     
     var context: NSManagedObjectContext {
