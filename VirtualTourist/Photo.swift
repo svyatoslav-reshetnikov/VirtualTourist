@@ -28,7 +28,7 @@ class Photo: NSManagedObject {
         }
     }
     
-    static func deletePhoto(pin: Pin, context: NSManagedObjectContext) {
+    static func deletePhotosInPin(pin: Pin, context: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
         fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["pin", pin])
         
@@ -37,6 +37,20 @@ class Photo: NSManagedObject {
         if photos != nil {
             for photo in photos! {
                 context.deleteObject(photo)
+            }
+        }
+    }
+    
+    static func getPhotoID(pin: Pin, context: NSManagedObjectContext) {
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["pin", pin])
+        
+        let photos = getPhotos(fetchRequest, context: context).map { photos in return photos as! [Photo] }
+        
+        if photos != nil {
+            for photo in photos! {
+                //context.deleteObject(photo)
+                print(photo.objectID)
             }
         }
     }

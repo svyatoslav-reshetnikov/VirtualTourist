@@ -68,23 +68,29 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         // Download new collection of images
         VirtualTouristClient.instance.photosSearch(coordinate.latitude, lon: coordinate.longitude, page: page, perPage: 21) { success, result, errorString in
             
-            self.indicator.stopAnimating()
+            // UI related code
+            dispatch_async(dispatch_get_main_queue()){
+                self.indicator.stopAnimating()
+            }
             
             guard let photos = result?.photos?.photos else {
                 return
             }
             
             for photo in photos {
-                ImageLoader.load(Utils.instance.buildURLForPhoto(photo, size: "s")).completionHandler({ url, image, error, cacheType in
-                    
-                    if image != nil {
+                let imgURL = NSURL(string: Utils.instance.buildURLForPhoto(photo, size: "s"))
+                let request: NSURLRequest = NSURLRequest(URL: imgURL!)
+                
+                let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, downloadError in
+                    if data != nil {
                         dispatch_async(dispatch_get_main_queue()) { [unowned self] in
-                            self.images.append(image!)
-                            Photo.savePhoto(UIImageJPEGRepresentation(image!, 1.0)!, pin: self.pin, context: self.context)
+                            self.images.append(UIImage(data: data!)!)
+                            Photo.savePhoto(data!, pin: self.pin, context: self.context)
                             self.collectionView.reloadData()
                         }
                     }
-                })
+                }
+                task.resume()
             }
             
         }
@@ -111,7 +117,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         images.removeAtIndex(indexPath.row)
-        Photo.deletePhoto(pin, context: context)
+        //Photo.deletePhoto(pin, context: context)
+        Photo.getPhotoID(pin, context: context)
         
         collectionView.reloadData()
     }
