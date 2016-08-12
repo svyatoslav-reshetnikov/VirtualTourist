@@ -50,21 +50,12 @@ class Photo: NSManagedObject {
     }
     
     static func deletePhoto(photo: Photo, context: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest(entityName: "Photo")
-        fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["image", photo.image!])
+        context.deleteObject(photo)
         
-        let photos = getPhotos(fetchRequest, context: context).map { photos in return photos as! [Photo] }
-        
-        if photos != nil {
-            for photo in photos! {
-                context.deleteObject(photo)
-                
-                do {
-                    try context.save()
-                } catch let error as NSError  {
-                    fatalError("Could not save \(error), \(error.userInfo)")
-                }
-            }
+        do {
+            try context.save()
+        } catch let error as NSError  {
+            fatalError("Could not save \(error), \(error.userInfo)")
         }
     }
     

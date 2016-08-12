@@ -119,8 +119,9 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        images.removeAtIndex(indexPath.row)
         Photo.deletePhoto(photos[indexPath.row], context: context)
+        images.removeAtIndex(indexPath.row)
+        photos.removeAtIndex(indexPath.row)
         
         collectionView.reloadData()
     }
