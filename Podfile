@@ -5,6 +5,5 @@ target 'VirtualTourist' do
 
   # Pods for VirtualTourist
   pod 'ObjectMapper', '~> 1.3'
-  pod 'ImageLoader'
 
 end
