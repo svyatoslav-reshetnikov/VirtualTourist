@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-import ImageLoader
 import QuartzCore
 import Foundation
 import CoreData
