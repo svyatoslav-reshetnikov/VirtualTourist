@@ -12,7 +12,7 @@ import CoreData
 
 class Photo: NSManagedObject {
 
-    static func savePhoto(image: NSData, pin: Pin, context: NSManagedObjectContext) {
+    static func savePhoto(image: NSData, pin: Pin, context: NSManagedObjectContext) -> Photo {
         if let ent = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context) {
             let photo = Photo(entity: ent, insertIntoManagedObjectContext: context)
             photo.image = image
@@ -23,6 +23,8 @@ class Photo: NSManagedObject {
             } catch let error as NSError  {
                 fatalError("Could not save \(error), \(error.userInfo)")
             }
+            
+            return photo
         } else {
             fatalError("Unable to find entity name!")
         }
@@ -37,20 +39,31 @@ class Photo: NSManagedObject {
         if photos != nil {
             for photo in photos! {
                 context.deleteObject(photo)
+                
+                do {
+                    try context.save()
+                } catch let error as NSError  {
+                    fatalError("Could not save \(error), \(error.userInfo)")
+                }
             }
         }
     }
     
-    static func getPhotoID(pin: Pin, context: NSManagedObjectContext) {
+    static func deletePhoto(photo: Photo, context: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
-        fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["pin", pin])
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", argumentArray:["image", photo.image!])
         
         let photos = getPhotos(fetchRequest, context: context).map { photos in return photos as! [Photo] }
         
         if photos != nil {
             for photo in photos! {
-                //context.deleteObject(photo)
-                print(photo.objectID)
+                context.deleteObject(photo)
+                
+                do {
+                    try context.save()
+                } catch let error as NSError  {
+                    fatalError("Could not save \(error), \(error.userInfo)")
+                }
             }
         }
     }

@@ -38,6 +38,11 @@ class Pin: NSManagedObject {
         if pins != nil {
             for pin in pins! {
                 context.deleteObject(pin)
+                do {
+                    try context.save()
+                } catch let error as NSError  {
+                    fatalError("Could not save \(error), \(error.userInfo)")
+                }
             }
         }
     }

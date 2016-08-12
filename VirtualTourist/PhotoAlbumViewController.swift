@@ -22,6 +22,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     var pin: Pin!
     var coordinate: CLLocationCoordinate2D!
     var images = [UIImage]()
+    var photos = [Photo]()
     var page = 0
     
     override func viewDidLoad() {
@@ -47,6 +48,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         if photos?.count > 0 {
             for photo in photos! {
                 images.append(UIImage(data: photo.image!)!)
+                self.photos.append(photo)
             }
         } else {
             photoSearch()
@@ -73,19 +75,20 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                 self.indicator.stopAnimating()
             }
             
-            guard let photos = result?.photos?.photos else {
+            guard let downloadedImages = result?.photos?.photos else {
                 return
             }
             
-            for photo in photos {
-                let imgURL = NSURL(string: Utils.instance.buildURLForPhoto(photo, size: "s"))
+            for image in downloadedImages {
+                let imgURL = NSURL(string: Utils.instance.buildURLForPhoto(image, size: "s"))
                 let request: NSURLRequest = NSURLRequest(URL: imgURL!)
                 
                 let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, downloadError in
                     if data != nil {
                         dispatch_async(dispatch_get_main_queue()) { [unowned self] in
                             self.images.append(UIImage(data: data!)!)
-                            Photo.savePhoto(data!, pin: self.pin, context: self.context)
+                            let photo = Photo.savePhoto(data!, pin: self.pin, context: self.context)
+                            self.photos.append(photo)
                             self.collectionView.reloadData()
                         }
                     }
@@ -117,8 +120,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         images.removeAtIndex(indexPath.row)
-        //Photo.deletePhoto(pin, context: context)
-        Photo.getPhotoID(pin, context: context)
+        Photo.deletePhoto(photos[indexPath.row], context: context)
         
         collectionView.reloadData()
     }
