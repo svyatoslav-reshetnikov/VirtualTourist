@@ -75,25 +75,34 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                 self.indicator.stopAnimating()
             }
             
-            guard let downloadedImages = result?.photos?.photos else {
-                return
-            }
-            
-            for image in downloadedImages {
-                let imgURL = NSURL(string: Utils.instance.buildURLForPhoto(image, size: "s"))
-                let request: NSURLRequest = NSURLRequest(URL: imgURL!)
+            if !success {
+                let alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: .Alert)
+                alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
                 
-                let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, downloadError in
-                    if data != nil {
-                        dispatch_async(dispatch_get_main_queue()) { [unowned self] in
-                            self.images.append(UIImage(data: data!)!)
-                            let photo = Photo.savePhoto(data!, pin: self.pin, context: self.context)
-                            self.photos.append(photo)
-                            self.collectionView.reloadData()
+                dispatch_async(dispatch_get_main_queue()){
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                }
+            } else {
+                guard let downloadedImages = result?.photos?.photos else {
+                    return
+                }
+            
+                for image in downloadedImages {
+                    let imgURL = NSURL(string: Utils.instance.buildURLForPhoto(image, size: "s"))
+                    let request: NSURLRequest = NSURLRequest(URL: imgURL!)
+                
+                    let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, downloadError in
+                        if data != nil {
+                            dispatch_async(dispatch_get_main_queue()) { [unowned self] in
+                                self.images.append(UIImage(data: data!)!)
+                                let photo = Photo.savePhoto(data!, pin: self.pin, context: self.context)
+                                self.photos.append(photo)
+                                self.collectionView.reloadData()
+                            }
                         }
                     }
+                    task.resume()
                 }
-                task.resume()
             }
             
         }
